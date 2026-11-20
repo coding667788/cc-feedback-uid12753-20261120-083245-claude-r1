@@ -1,0 +1,40 @@
+"""业务错误码与异常体系。
+
+所有可预期的业务拒绝都抛出 :class:`PublishError`，携带稳定错误码；
+CLI 与测试据此把业务失败回执与基础设施异常区分开。
+"""
+
+
+class PublishError(Exception):
+    """可预期的业务错误，``code`` 是稳定字符串错误码。"""
+
+    def __init__(self, code: str, message: str):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+
+    def to_dict(self) -> dict:
+        return {"code": self.code, "message": self.message}
+
+
+# 错误码常量（README“错误码”一节与这里保持一一对应）
+ERR_INVALID_POINTER = "INVALID_POINTER"
+ERR_ARRAY_INDEX = "ARRAY_INDEX_FORBIDDEN"
+ERR_PARENT_NOT_OBJECT = "PARENT_NOT_OBJECT"
+ERR_POINTER_NOT_FOUND = "POINTER_NOT_FOUND"
+ERR_BAD_OP = "UNKNOWN_OPERATION"
+ERR_BAD_PACKAGE = "MALFORMED_PACKAGE"
+ERR_CONFIG_HASH = "CONFIG_HASH_MISMATCH"
+ERR_SIGNATURE = "SIGNATURE_INVALID"
+ERR_UNKNOWN_SIGNER = "UNKNOWN_SIGNER"
+ERR_SIGNER_INACTIVE = "SIGNER_INACTIVE"
+ERR_SCOPE_DENIED = "SCOPE_DENIED"
+ERR_HIGH_SENSITIVE_DUAL = "HIGH_SENSITIVE_DUAL_CONTROL_REQUIRED"
+ERR_ROLE_INVALID = "ROLE_INVALID"
+ERR_SCHEMA = "SCHEMA_VIOLATION"
+ERR_BASE_VERSION = "BASE_VERSION_MISMATCH"
+ERR_TARGET_MISMATCH = "TARGET_MISMATCH"
+ERR_REQUEST_PARAM_MISMATCH = "REQUEST_PARAM_MISMATCH"
+ERR_UNKNOWN_TENANT = "UNKNOWN_TENANT"
+ERR_BARRIER_TIMEOUT = "BARRIER_TIMEOUT"
+ERR_STORAGE = "STORAGE_ERROR"

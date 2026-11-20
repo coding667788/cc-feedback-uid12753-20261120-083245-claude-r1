@@ -1,0 +1,325 @@
+{
+  "db_path": "D:\\my-workspace\\ai-workspace\\zhongqiang\\CC_Codex 用户反馈标注(领域专项)项目\\准备配置\\并行作答_20261117\\批次\\20261120\\12753\\本题\\作答工作区\\result.sqlite3",
+  "final_config": {
+    "app": {
+      "name": "demo",
+      "tags": [
+        "stable",
+        "blue"
+      ],
+      "timeout": 45,
+      "version": "1.0.0"
+    },
+    "features": {
+      "beta": true,
+      "dark": false
+    },
+    "security": {
+      "admins": [
+        "root"
+      ],
+      "mode": "enforce",
+      "tokens": {
+        "primary": "k-new",
+        "secondary": "k-backup"
+      }
+    }
+  },
+  "final_config_digest": "746ad5867e4b6d5d2a5a171890c2ad7b13f091843c554317e30b0423c285d3eb",
+  "final_pointer_version": 6,
+  "results": [
+    {
+      "affected_leaves": [
+        "/app/timeout"
+      ],
+      "base_version": 0,
+      "error": null,
+      "new_config_digest": "175713f1ff29a2fbf5e430b470662f0af45dbbca615286b5292e85d4902b0b00",
+      "ok": true,
+      "package_digest": "e8dadb4a5e69897ba5a9e575f85f3d279920268c47d495800b1185ae62df8c98",
+      "replayed": false,
+      "request_id": "r01-app-timeout",
+      "signer_identities": [
+        "alice"
+      ],
+      "status": "COMMITTED",
+      "version": 1
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "SIGNATURE_INVALID",
+        "message": "签名与完整包摘要不匹配，或包内容被篡改"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "7d88b08bbab8f10b256fcf579ddd58f86c85abc249c6d71e2fc0d7b5502de58a",
+      "replayed": false,
+      "request_id": "r02-bad-signature",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "HIGH_SENSITIVE_DUAL_CONTROL_REQUIRED",
+        "message": "高敏叶路径 /security/mode 需要 publisher 与 reviewer 两个独立角色（一人发布、一人复核），且二者作用域均覆盖该路径"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "9c173e9a81603d1917bcd701b346706f1fed6145e6dee9041bba8574a98a26e4",
+      "replayed": false,
+      "request_id": "r03-sensitive-single",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": [
+        "/security/mode"
+      ],
+      "base_version": 1,
+      "error": null,
+      "new_config_digest": "367a59094ee4c8652645edc242c2125023134da980f72eec9ae0d40db2d3e0be",
+      "ok": true,
+      "package_digest": "9c173e9a81603d1917bcd701b346706f1fed6145e6dee9041bba8574a98a26e4",
+      "replayed": false,
+      "request_id": "r04-sensitive-dual",
+      "signer_identities": [
+        "carol",
+        "bob"
+      ],
+      "status": "COMMITTED",
+      "version": 2
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "ARRAY_INDEX_FORBIDDEN",
+        "message": "禁止对数组按下标赋值，数组整体视作叶: /app/tags/0"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "cd5b6359b632066e3cea097bb41952e544980d6b83362409862a2868b844f465",
+      "replayed": false,
+      "request_id": "r05-array-index",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": [
+        "/app/tags"
+      ],
+      "base_version": 2,
+      "error": null,
+      "new_config_digest": "15f7fbd038695e176ed41af94dd2e65ff5e0303967aa03a47bcd386332638dda",
+      "ok": true,
+      "package_digest": "0633839d84ee2c05b46c12b8378dff61c4bf65bc0863e2c02579869cee9155a6",
+      "replayed": false,
+      "request_id": "r06-array-replace",
+      "signer_identities": [
+        "alice"
+      ],
+      "status": "COMMITTED",
+      "version": 3
+    },
+    {
+      "affected_leaves": [
+        "/app/tags"
+      ],
+      "base_version": 2,
+      "error": null,
+      "new_config_digest": "15f7fbd038695e176ed41af94dd2e65ff5e0303967aa03a47bcd386332638dda",
+      "ok": true,
+      "package_digest": "0633839d84ee2c05b46c12b8378dff61c4bf65bc0863e2c02579869cee9155a6",
+      "replayed": true,
+      "request_id": "r06-array-replace",
+      "signer_identities": [
+        "alice"
+      ],
+      "status": "COMMITTED",
+      "version": 3
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "REQUEST_PARAM_MISMATCH",
+        "message": "request_id 'r06-array-replace' 已用于不同参数的请求；同 ID 异参一律拒绝"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "88efa97b6344a9aef2397fa9b9df8c32d745d05fd2a6d9a63dc3eddac65dccd1",
+      "replayed": false,
+      "request_id": "r06-array-replace",
+      "signer_identities": null,
+      "status": "REJECTED",
+      "version": null
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "BASE_VERSION_MISMATCH",
+        "message": "基准版本 2 与当前发布版本 3 不一致（旧前置条件不可复用）"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "19fd4f9fdcc36193fdcb793ceb70ad2362dd75313bc7d29fdb5abf1dc492c5be",
+      "replayed": false,
+      "request_id": "r09-stale-base",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": [
+        "/features/beta"
+      ],
+      "base_version": 3,
+      "error": null,
+      "new_config_digest": "995d14f68a8bce99335b745441af8d847435e34dc4364716cdf6c576b7221c92",
+      "ok": true,
+      "package_digest": "92955397ff6eb2a0d88a2447f64e8f76c120fc44892567d862c1dbbf42bdd321",
+      "replayed": false,
+      "request_id": "r10-create-key",
+      "signer_identities": [
+        "alice"
+      ],
+      "status": "COMMITTED",
+      "version": 4
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "POINTER_NOT_FOUND",
+        "message": "中间路径不存在，无法创建嵌套键: /features/sub/flag"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "6b37d56e1e59d020daf6d05f27332385cbbc9065d0857983d353751810842783",
+      "replayed": false,
+      "request_id": "r11-create-deep-missing",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "SCHEMA_VIOLATION",
+        "message": "/security/mode 的值 'breaking' 不在枚举 ['off', 'audit', 'enforce'] 中"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "11f09c3cb3c1ad9aa6b8f0bcc38457ee469782cc85cd49e5f618474fd174e24f",
+      "replayed": false,
+      "request_id": "r12-schema-enum",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": [
+        "/security/tokens/primary"
+      ],
+      "base_version": 4,
+      "error": null,
+      "new_config_digest": "0773295560ee9a6a72d6ba12a744b602b8c6900dcfc699042a199282bec961c3",
+      "ok": true,
+      "package_digest": "93ecb45b343f8809d2906647522035ad5aa4af433321a5ffef7a098f5581ba5a",
+      "replayed": false,
+      "request_id": "r13-delete-object",
+      "signer_identities": [
+        "carol",
+        "bob"
+      ],
+      "status": "COMMITTED",
+      "version": 5
+    },
+    {
+      "affected_leaves": [
+        "/security/tokens/primary",
+        "/security/tokens/secondary"
+      ],
+      "base_version": 5,
+      "error": null,
+      "new_config_digest": "746ad5867e4b6d5d2a5a171890c2ad7b13f091843c554317e30b0423c285d3eb",
+      "ok": true,
+      "package_digest": "d091488948fd83aa18c1b04916b7bfbdc30902a74d652ffa5732e1e958bfd578",
+      "replayed": false,
+      "request_id": "r14-replace-sensitive-parent",
+      "signer_identities": [
+        "carol",
+        "bob"
+      ],
+      "status": "COMMITTED",
+      "version": 6
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "SCOPE_DENIED",
+        "message": "叶路径 /app/timeout 未被任何签名者作用域覆盖"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "b2a4b6ff96d30241e9af64b62733bc30f0a5193c35ccc7695b558579b933cb6a",
+      "replayed": false,
+      "request_id": "r15-scope-denied",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "UNKNOWN_SIGNER",
+        "message": "未知签名者: mallory"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "b2a4b6ff96d30241e9af64b62733bc30f0a5193c35ccc7695b558579b933cb6a",
+      "replayed": false,
+      "request_id": "r16-unknown-signer",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    },
+    {
+      "affected_leaves": null,
+      "base_version": null,
+      "error": {
+        "code": "TARGET_MISMATCH",
+        "message": "包目标 'other-config' 与租户绑定目标 'app-config' 不一致"
+      },
+      "new_config_digest": null,
+      "ok": false,
+      "package_digest": "a23bbd4f580ba3c4813716b5419b2056e1ffd938bbc288cef1474df232bd5d95",
+      "replayed": false,
+      "request_id": "r17-target-mismatch",
+      "signer_identities": null,
+      "status": "FAILED",
+      "version": null
+    }
+  ],
+  "scenario": "offline-config-publisher-cases",
+  "snapshot_versions": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ]
+}

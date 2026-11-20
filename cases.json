@@ -1,0 +1,660 @@
+{
+  "bootstrap": {
+    "initial_config": {
+      "app": {
+        "name": "demo",
+        "tags": [
+          "stable"
+        ],
+        "timeout": 30,
+        "version": "1.0.0"
+      },
+      "features": {
+        "dark": false
+      },
+      "security": {
+        "admins": [
+          "root"
+        ],
+        "mode": "audit",
+        "tokens": {
+          "primary": "k-initial"
+        }
+      }
+    },
+    "initial_config_digest": "dbdb83f96ef9c3bda41d24c61d0291cef0c620f7f837aac6a7ebce9232a5caad",
+    "schema": {
+      "additionalProperties": true,
+      "properties": {
+        "app": {
+          "additionalProperties": true,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timeout": {
+              "type": "integer"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ],
+          "type": "object"
+        },
+        "features": {
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "type": "object"
+        },
+        "security": {
+          "additionalProperties": true,
+          "properties": {
+            "admins": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "mode": {
+              "enum": [
+                "off",
+                "audit",
+                "enforce"
+              ],
+              "type": "string"
+            },
+            "tokens": {
+              "additionalProperties": false,
+              "properties": {
+                "primary": {
+                  "type": "string"
+                },
+                "secondary": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "primary"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "app",
+        "security"
+      ],
+      "type": "object"
+    },
+    "sensitive_prefixes": [
+      "/security"
+    ],
+    "signers": [
+      {
+        "active": true,
+        "identity": "alice",
+        "role": "publisher",
+        "scopes": [
+          "/app",
+          "/features"
+        ],
+        "secret": "secret-alice"
+      },
+      {
+        "active": true,
+        "identity": "bob",
+        "role": "reviewer",
+        "scopes": [
+          "/security",
+          "/app"
+        ],
+        "secret": "secret-bob"
+      },
+      {
+        "active": true,
+        "identity": "carol",
+        "role": "publisher",
+        "scopes": [
+          "/security"
+        ],
+        "secret": "secret-carol"
+      },
+      {
+        "active": true,
+        "identity": "dave",
+        "role": "publisher",
+        "scopes": [
+          "/app/name"
+        ],
+        "secret": "secret-dave"
+      }
+    ],
+    "target": "app-config",
+    "tenant": "t1"
+  },
+  "description": "离线配置发布器可重放场景；expect 为手工确定的独立判定",
+  "requests": [
+    {
+      "expect": {
+        "affected_leaves": [
+          "/app/timeout"
+        ],
+        "ok": true,
+        "status": "COMMITTED",
+        "version": 1
+      },
+      "package": {
+        "base_version": 0,
+        "config_digest": "dbdb83f96ef9c3bda41d24c61d0291cef0c620f7f837aac6a7ebce9232a5caad",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/timeout",
+            "value": 45
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "f2978aebf13a8ff9e6ccf01adf36c4ae08a58202f9cb0c17de544bcadf1e4323"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r01-app-timeout",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "SIGNATURE_INVALID",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 1,
+        "config_digest": "175713f1ff29a2fbf5e430b470662f0af45dbbca615286b5292e85d4902b0b00",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/timeout",
+            "value": 60
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r02-bad-signature",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "HIGH_SENSITIVE_DUAL_CONTROL_REQUIRED",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 1,
+        "config_digest": "175713f1ff29a2fbf5e430b470662f0af45dbbca615286b5292e85d4902b0b00",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/security/mode",
+            "value": "enforce"
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "carol",
+            "signature": "808ab20b102af814d9bf6ccba7784c76e12760cbd2d0b5bfd8c21409ec4900a3"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r03-sensitive-single",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "affected_leaves": [
+          "/security/mode"
+        ],
+        "ok": true,
+        "status": "COMMITTED",
+        "version": 2
+      },
+      "package": {
+        "base_version": 1,
+        "config_digest": "175713f1ff29a2fbf5e430b470662f0af45dbbca615286b5292e85d4902b0b00",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/security/mode",
+            "value": "enforce"
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "carol",
+            "signature": "808ab20b102af814d9bf6ccba7784c76e12760cbd2d0b5bfd8c21409ec4900a3"
+          },
+          {
+            "identity": "bob",
+            "signature": "42cba0c73aaf4820e2831e714ded9607ea8529690793f4669134aef876984eb5"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r04-sensitive-dual",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "ARRAY_INDEX_FORBIDDEN",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 2,
+        "config_digest": "367a59094ee4c8652645edc242c2125023134da980f72eec9ae0d40db2d3e0be",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/tags/0",
+            "value": "blue"
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "3e615d6c252aedaafb8a4def3f11c0c1d2be5d80f2dd660f1e9d6a0bc0d9592b"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r05-array-index",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "affected_leaves": [
+          "/app/tags"
+        ],
+        "ok": true,
+        "status": "COMMITTED",
+        "version": 3
+      },
+      "package": {
+        "base_version": 2,
+        "config_digest": "367a59094ee4c8652645edc242c2125023134da980f72eec9ae0d40db2d3e0be",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/tags",
+            "value": [
+              "stable",
+              "blue"
+            ]
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "081fdf0bf484706b2b2258eff8af874149fdae9dd3361db903a3e51129d42e67"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r06-array-replace",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "ok": true,
+        "replayed": true,
+        "status": "COMMITTED",
+        "version": 3
+      },
+      "package": {
+        "base_version": 2,
+        "config_digest": "367a59094ee4c8652645edc242c2125023134da980f72eec9ae0d40db2d3e0be",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/tags",
+            "value": [
+              "stable",
+              "blue"
+            ]
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "081fdf0bf484706b2b2258eff8af874149fdae9dd3361db903a3e51129d42e67"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r06-array-replace",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "REQUEST_PARAM_MISMATCH",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 2,
+        "config_digest": "367a59094ee4c8652645edc242c2125023134da980f72eec9ae0d40db2d3e0be",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/tags",
+            "value": [
+              "different"
+            ]
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "e1af58d028347d867e5fdaaaf70c275aa1bdd78a3e2598642063e6a8b67bdabf"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r06-array-replace",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "BASE_VERSION_MISMATCH",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 2,
+        "config_digest": "367a59094ee4c8652645edc242c2125023134da980f72eec9ae0d40db2d3e0be",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/timeout",
+            "value": 90
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "c19b557a612059f064b112b7ce98fbbf004ecb7827391580e76761cf599dacbf"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r09-stale-base",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "affected_leaves": [
+          "/features/beta"
+        ],
+        "ok": true,
+        "status": "COMMITTED",
+        "version": 4
+      },
+      "package": {
+        "base_version": 3,
+        "config_digest": "15f7fbd038695e176ed41af94dd2e65ff5e0303967aa03a47bcd386332638dda",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/features/beta",
+            "value": true
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "9c15457b17225e91f6b51a7ee8100ecf9aac0a15edc7d6260f7cfc4b82d51afd"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r10-create-key",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "POINTER_NOT_FOUND",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 4,
+        "config_digest": "995d14f68a8bce99335b745441af8d847435e34dc4364716cdf6c576b7221c92",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/features/sub/flag",
+            "value": true
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "1fdf4c45da7395bec237108cfe548327a0f3fdf20f25f7c4ab6e2cbbe7d839b3"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r11-create-deep-missing",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "SCHEMA_VIOLATION",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 4,
+        "config_digest": "995d14f68a8bce99335b745441af8d847435e34dc4364716cdf6c576b7221c92",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/security/mode",
+            "value": "breaking"
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "carol",
+            "signature": "829a87afe285819531cf282e6cb7247840c14aa5bca22e0a5971328effe91f45"
+          },
+          {
+            "identity": "bob",
+            "signature": "ce49dcf96167890dd8071ee6140b0b36fb7232a6528879c324191f52ef506282"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r12-schema-enum",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "affected_leaves": [
+          "/security/tokens/primary"
+        ],
+        "ok": true,
+        "status": "COMMITTED",
+        "version": 5
+      },
+      "package": {
+        "base_version": 4,
+        "config_digest": "995d14f68a8bce99335b745441af8d847435e34dc4364716cdf6c576b7221c92",
+        "operations": [
+          {
+            "op": "delete",
+            "path": "/security/tokens"
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "carol",
+            "signature": "aa10a5e67b9496d2ecfb64ba87c33df851bf8f9a52dfb466dc808dffa5a9905c"
+          },
+          {
+            "identity": "bob",
+            "signature": "88a4460258ae09da03243aed41fb4c59b062bcaf675592ce26c611bdef2b0b62"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r13-delete-object",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "affected_leaves": [
+          "/security/tokens/primary",
+          "/security/tokens/secondary"
+        ],
+        "ok": true,
+        "status": "COMMITTED",
+        "version": 6
+      },
+      "package": {
+        "base_version": 5,
+        "config_digest": "0773295560ee9a6a72d6ba12a744b602b8c6900dcfc699042a199282bec961c3",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/security/tokens",
+            "value": {
+              "primary": "k-new",
+              "secondary": "k-backup"
+            }
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "carol",
+            "signature": "fe514dc91e0b8757659cb9e683a312a24b38b0769b3bd948a8c5ee77270f3339"
+          },
+          {
+            "identity": "bob",
+            "signature": "b6f5787876981f802745332f2cdfea2780ae10c93ace7c0e312a0419ac9b696a"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r14-replace-sensitive-parent",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "SCOPE_DENIED",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 6,
+        "config_digest": "746ad5867e4b6d5d2a5a171890c2ad7b13f091843c554317e30b0423c285d3eb",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/timeout",
+            "value": 100
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "dave",
+            "signature": "0e418b68a2a429cc818294bf0710077ec5feea9af8f4d59f7a4abc9d7ee37dc8"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r15-scope-denied",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "UNKNOWN_SIGNER",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 6,
+        "config_digest": "746ad5867e4b6d5d2a5a171890c2ad7b13f091843c554317e30b0423c285d3eb",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/timeout",
+            "value": 100
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "mallory",
+            "signature": "e177fe3bdca84a0398f197871c496f381f922a52d66a68b7bcac67852085e2c4"
+          }
+        ],
+        "target": "app-config"
+      },
+      "request_id": "r16-unknown-signer",
+      "tenant": "t1"
+    },
+    {
+      "expect": {
+        "error_code": "TARGET_MISMATCH",
+        "ok": false,
+        "version": null
+      },
+      "package": {
+        "base_version": 6,
+        "config_digest": "746ad5867e4b6d5d2a5a171890c2ad7b13f091843c554317e30b0423c285d3eb",
+        "operations": [
+          {
+            "op": "set",
+            "path": "/app/timeout",
+            "value": 100
+          }
+        ],
+        "signatures": [
+          {
+            "identity": "alice",
+            "signature": "23f1613875d6244f27dd32bca6574d8b351d0af0d0ab7d2ad6c7dd1fffdd9a41"
+          }
+        ],
+        "target": "other-config"
+      },
+      "request_id": "r17-target-mismatch",
+      "tenant": "t1"
+    }
+  ],
+  "scenario_name": "offline-config-publisher-cases"
+}
